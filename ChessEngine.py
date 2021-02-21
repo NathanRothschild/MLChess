@@ -18,14 +18,17 @@ class GameState():
         self.board[move.endRow][move.endCol] = move.pieceMoved
         self.moveLog.append(move)
         self.whiteToMove = not self.whiteToMove
+
     def undoMove(self):
         if len(self.moveLog) != 0:
             move = self.moveLog.pop()
             self.board[move.startRow][move.startCol] = move.pieceMoved
             self.board[move.endRow][move.endCol] = move.pieceCaptured
             self.whiteToMove = not self.whiteToMove #switching turns (white to black)
+
     def getValidMoves(self):
         return self.getAllPossibleMoves()
+
     def getAllPossibleMoves(self):
         moves = [Move((6, 4), (4, 4), self.board)]
         for r in range(len(self.board)):
@@ -35,6 +38,7 @@ class GameState():
                     piece = self.board[r][c][1]
                     self.moveFunctions[piece](r,c,moves)
         return moves
+
     def getPawnMoves(self, r, c, moves):
         if self.whiteToMove:
             if self.board[r-1][c]=="--":
@@ -55,182 +59,75 @@ class GameState():
             if c-1>=0:
                 if self.board[r+1][c-1][0]=="w":
                     moves.append(Move((r,c),(r+1,c-1),self.board))
-            if c+1<=7:
+            if c+1<= 7:
                 if self.board[r+1][c+1][0]=="w":
                     moves.append(Move((r,c),(r+1,c+1),self.board))
+        #add pawn promotions later
+
     def getRookMoves(self, r, c, moves):
-        blockedN = False
-        blockedE = False
-        blockedS = False
-        blockedW = False
-        if self.whiteToMove:
-            for i in range(1,8):
-                if not (c+i>=7 or blockedE):
-                    if self.board[r][c+i]=="--":
-                        moves.append(Move((r,c),(r,c+i),self.board))
-                    elif self.board[r][c+i][0]=="b":
-                        moves.append(Move((r,c),(r,c+i),self.board))
-                        blockedE = True
+        directions = ((-1,0), (0, -1), (1,0), (0,1))
+        enemyColor = "b" if self.whiteToMove else "w"
+        for d in directions:
+            for i in range (1, 8):
+                endRow = r + d[0] * i
+                endCol = c + d[1] * i
+                if 0 <= endRow < 8 and 0 <= endCol < 8:
+                    endPiece = self.board[endRow][endCol]
+                    if endPiece == "--":
+                        moves.append(Move((r,c),(endRow, endCol), self.board))
+                    elif endPiece[0] == enemyColor:
+                        moves.append(Move((r,c),(endRow, endCol), self.board))
+                        break
                     else:
-                        blockedE = True
-                if not(c-i<=0 or blockedW):
-                    if self.board[r][c-i]=="--":
-                        moves.append(Move((r,c),(r,c-i),self.board))
-                    elif self.board[r][c-i][0]=="b":
-                        moves.append(Move((r,c),(r,c-i),self.board))
-                        blockedW = True
-                    else:
-                        blockedW = True
-                if not(r+i>=7 or blockedS):
-                    if self.board[r+i][c]=="--":
-                        moves.append(Move((r,c),(r+i,c),self.board))
-                    elif self.board[r+i][c][0]=="b":
-                        moves.append(Move((r,c),(r+i,c),self.board))
-                        blockedS = True
-                    else:
-                        blockedS = True
-                if not(r-i<=0 or blockedN):
-                    if self.board[r-i][c]=="--":
-                        moves.append(Move((r,c),(r-i,c),self.board))
-                    elif self.board[r-i][c][0]=="b":
-                        moves.append(Move((r,c),(r-i,c),self.board))
-                        blockedN = True
-                    else:
-                        blockedN = True
-        else:
-            for i in range(1,8):
-                if not (c+i>=7 or blockedE):
-                    if self.board[r][c+i]=="--":
-                        moves.append(Move((r,c),(r,c+i),self.board))
-                    elif self.board[r][c+i][0]=="w":
-                        moves.append(Move((r,c),(r,c+i),self.board))
-                        blockedE = True
-                    else:
-                        blockedE = True
-                if not(c-i<=0 or blockedW):
-                    if self.board[r][c-i]=="--":
-                        moves.append(Move((r,c),(r,c-i),self.board))
-                    elif self.board[r][c-i][0]=="w":
-                        moves.append(Move((r,c),(r,c-i),self.board))
-                        blockedW = True
-                    else:
-                        blockedW = True
-                if not(r+i>=7 or blockedS):
-                    if self.board[r+i][c]=="--":
-                        moves.append(Move((r,c),(r+i,c),self.board))
-                    elif self.board[r+i][c][0]=="w":
-                        moves.append(Move((r,c),(r+i,c),self.board))
-                        blockedS = True
-                    else:
-                        blockedS = True
-                if not(r-i<=0 or blockedN):
-                    if self.board[r-i][c]=="--":
-                        moves.append(Move((r,c),(r-i,c),self.board))
-                    elif self.board[r-i][c][0]=="w":
-                        moves.append(Move((r,c),(r-i,c),self.board))
-                        blockedN = True
-                    else:
-                        blockedN = True
+                        break
+                else:
+                    break
 
 
     def getKnightMoves(self,r,c,moves):
-        movelist = [(r-2,c-1),(r-2,c+1),(r+2,c-1),(r+2,c+1),(r+1,c+2),(r-1,c+2),(r-1,c-2),(r+1,c-2)]
-        if self.whiteToMove:
-            for move in movelist:
-                if 7>=move[0]>=0 and 7>=move[1]>=0 and self.board[move[0]][move[1]][0]!="w":
-                    moves.append(Move((r,c),move,self.board))
-        else:
-            for move in movelist:
-                if 7>=move[0]>=0 and 7>=move[1]>=0 and self.board[move[0]][move[1]][0]!="b":
-                    moves.append(Move((r,c),move,self.board))
+        knightMoves = ((-2,-1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1), (2, 1))
+        allyColor = "w" if self.whiteToMove else "b"
+        for m in knightMoves:
+            endRow = r = m[0]
+            endCol = c + m[1]
+            if 0 <= endRow < 8 and 0 <= endCol < 8:
+                endPiece = self.board[endRow][endCol]
+                if endPiece[0] != allyColor:
+                    moves.append(Move((r,c),(endRow, endCol), self.board))
+
     def getBishopMoves(self,r,c,moves):
-        blockedSE = False
-        blockedSW = False
-        blockedNE = False
-        blockedNW = False
-        if self.whiteToMove:
-            for i in range (1,8):
-                if not(c+i>=7 or r + i >= 7) and not blockedSE:
-                    if self.board[r+i][c+i]=="--":
-                        moves.append(Move((r,c),(r+i,c+i),self.board))
-                    elif self.board[r+i][c+i][0]=="b":
-                        moves.append(Move((r,c),(r+i,c+i),self.board))
-                        blockedSE = True
+        directions = ((-1,-1), (-1,1), (1,-1), (1,1))
+        enemyColor = "b" if self.whiteToMove else "w"
+        for d in directions:
+            for i in range (1, 8):
+                endRow = r + d[0] * i
+                endCol = c + d[1] * i
+                if 0 <= endRow < 8 and 0 <= endCol < 8:
+                    endPiece = self.board[endRow][endCol]
+                    if endPiece == "--":
+                        moves.append(Move((r,c),(endRow, endCol), self.board))
+                    elif endPiece[0] == enemyColor:
+                        moves.append(Move((r,c),(endRow, endCol), self.board))
+                        break
                     else:
-                        blockedSE = True
-                if not(c-i<=0 or r - i <= 0) and not blockedNW:
-                    if self.board[r-i][c-i]=="--":
-                        moves.append(Move((r,c),(r-i,c-i),self.board))
-                    elif self.board[r-i][c-i][0]=="b":
-                        moves.append(Move((r,c),(r-i,c-i),self.board))
-                        blockedNW = True
-                    else:
-                        blockedNW = True
-                if not(c+i>=7 or r-i<=0) and not blockedNE:
-                    if self.board[r-i][c+i]=="--":
-                        moves.append(Move((r,c),(r-i,c+i),self.board))
-                    elif self.board[r-i][c+i][0]=="b":
-                        moves.append(Move((r,c),(r-i,c+i),self.board))
-                        blockedNE = True
-                    else:
-                        blockedNE = True
-                if not(c-i<=0 or r+i>=7)and not blockedSW:
-                    if self.board[r+i][c-i]=="--":
-                        moves.append(Move((r,c),(r+i,c-i),self.board))
-                    elif self.board[r+i][c-i][0]=="b":
-                        moves.append(Move((r,c),(r+i,c-i),self.board))
-                        blockedSW = True
-                    else:
-                        blockedSW = True
-        else:
-            for i in range (1,8):
-                if not(c+i>=7 or r + i >= 7) and not blockedSE:
-                    if self.board[r+i][c+i]=="--":
-                        moves.append(Move((r,c),(r+i,c+i),self.board))
-                    elif self.board[r+i][c+i][0]=="w":
-                        moves.append(Move((r,c),(r+i,c+i),self.board))
-                        blockedSE = True
-                    else:
-                        blockedSE = True
-                if not(c-i<=0 or r - i <= 0) and not blockedNW:
-                    if self.board[r-i][c-i]=="--":
-                        moves.append(Move((r,c),(r-i,c-i),self.board))
-                    elif self.board[r-i][c-i][0]=="w":
-                        moves.append(Move((r,c),(r-i,c-i),self.board))
-                        blockedNW = True
-                    else:
-                        blockedNW = True
-                if not(c+i>=7 or r-i<=0) and not blockedNE:
-                    if self.board[r-i][c+i]=="--":
-                        moves.append(Move((r,c),(r-i,c+i),self.board))
-                    elif self.board[r-i][c+i][0]=="w":
-                        moves.append(Move((r,c),(r-i,c+i),self.board))
-                        blockedNE = True
-                    else:
-                        blockedNE = True
-                if not(c-i<=0 or r+i>=7)and not blockedSW:
-                    if self.board[r+i][c-i]=="--":
-                        moves.append(Move((r,c),(r+i,c-i),self.board))
-                    elif self.board[r+i][c-i][0]=="w":
-                        moves.append(Move((r,c),(r+i,c-i),self.board))
-                        blockedSW = True
-                    else:
-                        blockedSW = True
+                        break
+                else:
+                    break
 
     def getQueenMoves(self,r,c,moves):
-        self.getBishopMoves(r,c,moves) # there might be a bug in the rook movement, I wasn't able to recreate it tho. i was able to capture my on piece as white capturing up -Archie
+        self.getBishopMoves(r,c,moves)
         self.getRookMoves(r,c,moves)
+
     def getKingMoves(self,r,c,moves):
-        if self.whiteToMove:
-            for i in range(-1,2):
-                for j in range(-1,2):
-                    if 7>=r+i>=0 and 7>=c+j>=0 and self.board[r+i][c+j][0]!="w":
-                        moves.append(Move((r,c),(r+i,c+j),self.board))
-        else:
-            for i in range(-1,2):
-                for j in range(-1,2):
-                    if 7>=r+i>=0 and 7>=c+j>=0 and self.board[r+i][c+j][0]!="b":
-                        moves.append(Move((r,c),(r+i,c+j),self.board))
+        kingMoves = ((-1, -1), (-1, 0 ), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1))
+        allyColor = "w" if self.whiteToMove else "b"
+        for i in range(8):
+            endRow = r + kingMoves[i][0]
+            endCol = c + kingMoves[i][1]
+            if 0 <= endRow < 8 and 0 <= endCol < 8:
+                endPiece = self.board[endRow][endCol]
+                if endPiece[0] != allyColor:
+                    moves.append(Move((r,c), (endRow, endCol), self.board))
                     
 
 class Move():
