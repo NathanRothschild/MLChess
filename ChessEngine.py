@@ -66,8 +66,9 @@ class GameState():
                         if validSquare[0]==checkRow and validSquare[1]==checkCol:
                             break
                 for i in range(len(moves) - 1, -1, -1):
-                    if moves[i].pieceMoved[1]!='K': 
-                        moves.remove(moves[i])
+                    if moves[i].pieceMoved[1]!='K':
+                        if not (moves[i].endRow,moves[i].endCol) in validSquares:
+                            moves.remove(moves[i])
             else:
                 self.getKingMoves(kingRow,kingCol,moves)
         else:
@@ -318,6 +319,20 @@ class GameState():
                         self.whiteKingLocation = (r,c)
                     else:
                         self.blackKingLocation = (r,c)
+    def determineEndGame(self):
+        allmoves = self.getValidMoves()
+        allyColor = "w" if self.whiteToMove else "b"
+        if allyColor == "w" and len(allmoves)==0:
+            if self.inCheck:
+                return -1
+            else: 
+                return 0
+        elif len(allmoves)==0:
+            if self.inCheck:
+                return 1
+            else:
+                return 0
+        return False
                     
 
 class Move():
@@ -348,3 +363,11 @@ class Move():
 
     def getRankFile(self, r, c):
         return self.colsToFiles[c] + self.rowsToRanks[r]
+
+
+
+
+
+
+
+
