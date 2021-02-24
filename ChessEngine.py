@@ -343,7 +343,8 @@ class GameState():
             if 0 <= endRow < 8 and 0 <= endCol < 8:
                 endPiece = self.board[endRow][endCol]
                 if endPiece[0] != allyColor:
-                    moves.append(Move(r, c), (endRow, endCol), self.board)
+                    moves.append(Move((r, c), (endRow, endCol), self.board))
+
     def getCastleMoves(self, r, c, moves):
         if self.squareUnderAttack(r, c):
             return
@@ -374,6 +375,7 @@ class GameState():
             else:
                 return 0
         return False
+
 class CastleRights():
     def __init__ (self, wks, bks, wqs, bqs):
         self.wks = wks
