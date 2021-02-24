@@ -15,6 +15,8 @@ class GameState():
         self.whiteKingLocation = (7, 4)
         self.blackKingLocation = (0, 4)
         self.inCheck = False
+        self.checkmate = False
+        self.stalemate = False
         self.pins = []
         self.checks = []
         self.enpassantPossible = ()
