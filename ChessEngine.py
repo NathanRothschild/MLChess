@@ -45,10 +45,10 @@ class GameState():
         if move.isCastleMove:
             if move.endCol - move.startCol == 2:
                 self.board[move.endRow][move.endCol-1] = self.board[move.endRow][move.endCol+1]
-                self.board[move.endRow][move.endCol+1] = '--'
+                self.board[move.endRow][move.endCol+1] == '--'
             else:
                 self.board[move.endRow][move.endCol+1] = self.board[move.endRow][move.endCol-2]
-                self.board[move.endRow][move.endCol-2] = '--'
+                self.board[move.endRow][move.endCol-2] == '--'
 
         self.updateCastleRights(move)
         self.castleRightsLog.append(CastleRights(self.currentCastlingRight.wks, self.currentCastlingRight.bks, self.currentCastlingRight.wqs, self.currentCastlingRight.bqs))
