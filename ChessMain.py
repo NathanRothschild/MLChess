@@ -27,8 +27,8 @@ def main():
     loadImages()
     running = True
     gameOver = False
-    playerOne = False #if a human is playing white
-    playerTwo = False #if a human is playing black
+    playerOne = True #if a human is playing white
+    playerTwo = True #if a human is playing black
     sqSelected = ()
     playerClicks = []
 
