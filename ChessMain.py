@@ -27,10 +27,11 @@ def main():
     loadImages()
     running = True
     gameOver = False
-    playerOne = True #if a human is playing white
+    playerOne = False #if a human is playing white
     playerTwo = False #if a human is playing black
     sqSelected = ()
     playerClicks = []
+
     while running:
         humanTurn = (gs.whiteToMove and playerOne) or (not gs.whiteToMove and playerTwo)
         for e in p.event.get():
@@ -64,6 +65,7 @@ def main():
                     gs.undoMove()
                     moveMade = True
                     animate = False
+                    gameOver = False
                 if e.key == p.K_r: 
                     gs = ChessEngine.GameState()
                     validMoves = gs.getValidMoves()
@@ -71,9 +73,12 @@ def main():
                     playerClicks = []
                     moveMade = False
                     animate = False
+                    gameOver = False
 
         if not gameOver and not humanTurn:
-            AIMove = ChessAI.findRandomMove(validMoves)
+            AIMove = ChessAI.findBestMoveMinMax(gs, validMoves)
+            if AIMove is None:
+                AIMove = ChessAI.findRandomMove(validMoves)
             gs.makeMove(AIMove)
             moveMade = True
             animate = True
@@ -94,6 +99,7 @@ def main():
             else:
                 drawText(screen, 'White wins by checkmate')
         elif gs.stalemate:
+            gameOver = True
             drawText(screen, 'Draw by stalemate')
 
         clock.tick(MAX_FPS)
