@@ -27,8 +27,8 @@ def main():
     loadImages()
     running = True
     gameOver = False
-    playerOne = False #if a human is playing white
-    playerTwo = False #if a human is playing black
+    playerOne = True #if a human is playing white
+    playerTwo = True #if a human is playing black
     sqSelected = ()
     playerClicks = []
 
@@ -85,7 +85,7 @@ def main():
 
         if moveMade:
             if animate:
-                animateMove(gs.moveLog[-1], screen, gs.board, clock)
+                animateMove(gs.moveLog[-1], screen, gs.board, clock, gs)
             validMoves = gs.getValidMoves()
             moveMade = False
             animate = False
@@ -140,7 +140,7 @@ def drawPieces(screen, board):
             if piece != "--":
                 screen.blit(IMAGES[piece], p.Rect(c*SQ_SIZE, r*SQ_SIZE, SQ_SIZE, SQ_SIZE))
 
-def animateMove(move, screen, board, clock):
+def animateMove(move, screen, board, clock, gs):
     global colors
     dR = move.endRow - move.startRow
     dC = move.endCol - move.startCol
@@ -158,6 +158,10 @@ def animateMove(move, screen, board, clock):
         screen.blit(IMAGES[move.pieceMoved], p.Rect(c*SQ_SIZE, r*SQ_SIZE, SQ_SIZE, SQ_SIZE))
         p.display.flip()
         clock.tick(60)
+    print('gs.checkmate: ' + str(gs.checkmate))
+    print('gs.stalemate: ' + str(gs.stalemate))
+    print('gs.determineEndGame: ' + str(gs.determineEndGame()))
+    print('gs.getValidMoves has ' + str(len(gs.getValidMoves())) + ' terms.')
 
 def drawText(screen, text):
     font = p.font.SysFont('Helvetica', 32 , True, False)
