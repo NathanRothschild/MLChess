@@ -105,7 +105,7 @@ class GameState():
 
 
     def getValidMoves(self):
-        """tempEnpassantPossible = self.enpassantPossible
+        tempEnpassantPossible = self.enpassantPossible
         tempCastleRights = CastleRights(self.currentCastlingRight.wks, self.currentCastlingRight.bks, self.currentCastlingRight.wqs, self.currentCastlingRight.bqs)
         moves = self.getAllPossibleMoves()
         if self.whiteToMove:
@@ -115,7 +115,7 @@ class GameState():
         for i in range(len(moves)-1, -1, -1):
             self.makeMove(moves[i])
             self.whiteToMove = not self.whiteToMove
-            if self.inCheck:
+            if self.inCheck():
                 moves.remove(moves[i])
             self.whiteToMove = not self.whiteToMove
             self.undoMove()
@@ -128,40 +128,6 @@ class GameState():
         self.enpassantPossible = tempEnpassantPossible
         self.currentCastlingRight = tempCastleRights
         
-        """
-        moves = []
-        self.inCheck, self.pins, self.checks = self.checkForPinsAndChecks()
-        if self.whiteToMove:
-            kingRow = self.whiteKingLocation[0]
-            kingCol = self.whiteKingLocation[1]
-        else:
-            kingRow = self.blackKingLocation[0]
-            kingCol = self.blackKingLocation[1]
-        if self.inCheck:
-            if len(self.checks) == 1:
-                moves = self.getAllPossibleMoves()
-                check = self.checks[0]
-                checkRow = check[0]
-                checkCol = check[1]
-                pieceChecking = self.board[checkRow][checkCol]
-                validSquares = []
-                if pieceChecking[1]=='N':
-                    validSquares = [(checkRow,checkCol)]
-                else:
-                    for i in range(1,8):
-                        validSquare = (kingRow + check[2]*i, kingCol + check[3] * i)
-                        validSquares.append(validSquare)
-                        if validSquare[0]==checkRow and validSquare[1]==checkCol:
-                            break
-                for i in range(len(moves) - 1, -1, -1):
-                    if moves[i].pieceMoved[1]!='K':
-                        if not (moves[i].endRow,moves[i].endCol) in validSquares:
-                            moves.remove(moves[i])
-            else:
-                self.getKingMoves(kingRow,kingCol,moves)
-        else:
-            moves = self.getAllPossibleMoves()
-        return moves
         
 
     def checkForPinsAndChecks(self):
