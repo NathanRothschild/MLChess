@@ -105,7 +105,7 @@ class GameState():
 
 
     def getValidMoves(self):
-        tempEnpassantPossible = self.enpassantPossible
+        """tempEnpassantPossible = self.enpassantPossible
         tempCastleRights = CastleRights(self.currentCastlingRight.wks, self.currentCastlingRight.bks, self.currentCastlingRight.wqs, self.currentCastlingRight.bqs)
         moves = self.getAllPossibleMoves()
         if self.whiteToMove:
@@ -127,7 +127,7 @@ class GameState():
 
         self.enpassantPossible = tempEnpassantPossible
         self.currentCastlingRight = tempCastleRights
-        return moves
+        
         """
         moves = []
         self.inCheck, self.pins, self.checks = self.checkForPinsAndChecks()
@@ -139,7 +139,6 @@ class GameState():
             kingCol = self.blackKingLocation[1]
         if self.inCheck:
             if len(self.checks) == 1:
-                print("is it evernot?")
                 moves = self.getAllPossibleMoves()
                 check = self.checks[0]
                 checkRow = check[0]
@@ -148,7 +147,6 @@ class GameState():
                 validSquares = []
                 if pieceChecking[1]=='N':
                     validSquares = [(checkRow,checkCol)]
-                    print("yup==============")
                 else:
                     for i in range(1,8):
                         validSquare = (kingRow + check[2]*i, kingCol + check[3] * i)
@@ -164,7 +162,7 @@ class GameState():
         else:
             moves = self.getAllPossibleMoves()
         return moves
-        """
+        
 
     def checkForPinsAndChecks(self):
         pins = []
@@ -220,7 +218,7 @@ class GameState():
                 endPiece = self.board[endRow][endCol]
                 if endPiece[0]==enemyColor and endPiece[1]=='N':
                     # I ADDED PRINT STATEMENT HERE, DID SHOW
-                    inCheck==True
+                    inCheck=True
                     checks.append((endRow,endCol,m[0],m[1]))
         return inCheck,pins,checks
 
