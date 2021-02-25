@@ -8,44 +8,48 @@ DEPTH = 3
 def findRandomMove(validMoves):
     return random.choice(validMoves)
 
-# def findBestMove(gs, validMoves):
-#     turnMultiplier = 1 if gs.whiteToMove else -1
-#     opponentMinMaxScore = CHECKMATE
-#     bestPlayerMove = None
-#     random.shuffle(validMoves)
-#     for playerMove in validMoves:
-#         gs.makeMove(playerMove)
-#         opponentsMoves = gs.getValidMoves()
-#         if gs.stalemate:
-#             opponentsMoves = STALEMATE
-#         elif gs.checkmate:
-#             opponentMaxScore = -CHECKMATE
-#         else:
-#             opponentMaxScore = -CHECKMATE
-#             for opponentsMove in opponentsMoves:
-#                 gs.makeMove(opponentsMove)
-#                 gs.getValidMoves()
-#                 if gs.checkmate:
-#                     score = CHECKMATE
-#                 elif gs.stalemate:
-#                     score = STALEMATE
-#                 else: 
-#                     score = -turnMultiplier * scoreMaterial(gs.board)
-#                 if score > opponentMaxScore:
-#                     opponentMaxScore = score
-#                 gs.undoMove()    
-#             if opponentMaxScore < opponentMinMaxScore:
-#                 opponentMinMaxScore = opponentMaxScore
-#                 bestPlayerMove = playerMove
-#             gs.undoMove()
-#     return bestPlayerMove
+def findBestMoveMinMaxNoRecusion(gs, validMoves):
+    turnMultiplier = 1 if gs.whiteToMove else -1
+    opponentMinMaxScore = CHECKMATE
+    bestPlayerMove = None
+    random.shuffle(validMoves)
+    for playerMove in validMoves:
+        gs.makeMove(playerMove)
+        opponentsMoves = gs.getValidMoves()
+        if gs.stalemate:
+            opponentsMoves = STALEMATE
+        elif gs.checkmate:
+            opponentMaxScore = -CHECKMATE
+        else:
+            opponentMaxScore = -CHECKMATE
+            for opponentsMove in opponentsMoves:
+                gs.makeMove(opponentsMove)
+                gs.getValidMoves()
+                if gs.checkmate:
+                    score = CHECKMATE
+                elif gs.stalemate:
+                    score = STALEMATE
+                else: 
+                    score = -turnMultiplier * scoreMaterial(gs.board)
+                if score > opponentMaxScore:
+                    opponentMaxScore = score
+                gs.undoMove()    
+            if opponentMaxScore < opponentMinMaxScore:
+                opponentMinMaxScore = opponentMaxScore
+                bestPlayerMove = playerMove
+            gs.undoMove()
+    return bestPlayerMove
 
 # helper method
-def findBestMoveMinMax(gs, validMoves):
-    global nextMove
+def findBestMove(gs, validMoves):
+    global nextMove, counter
     nextMove = None
     random.shuffle(validMoves)
-    findMoveMinMax(gs, validMoves, DEPTH, gs.whiteToMove)
+    counter = 0
+    #fineMoveMinMax(gs, validMoves, DEPTH, gs.whiteToMove)
+    #findMoveNegaMax(gs, validMoves, DEPTH, 1 if gs.whiteToMove else -1)
+    findMoveNegaMaxAlphaBeta(gs, validMoves, DEPTH, -CHECKMATE, CHECKMATE, 1 if gs.whiteToMove else -1)
+    print(counter)
     return nextMove
 
 def findMoveMinMax(gs, validMoves, depth, whiteToMove):
@@ -77,7 +81,49 @@ def findMoveMinMax(gs, validMoves, depth, whiteToMove):
                     nextMove = move
             gs.undoMove()
         return minScore        
-                
+
+def findMoveNegaMax(gs, validMoves, depth, turnMultiplier):  
+    global nextMove, counter
+    counter +=1
+    if depth == 0:
+        return turnMultiplier * scoreBoard(gs)
+
+    maxScore = -CHECKMATE
+    for move in validMoves:
+        gs.makeMove(move)
+        nextMoves = gs.getValidMoves()
+        score = -findMoveNegaMax(gs, nextMoves, depth-1, -turnMultiplier)
+        if score > maxScore:
+            maxScore = score
+            if depth == DEPTH:
+                nextMove = move
+        gs.undoMove()
+    return maxScore
+
+#assuming the opponent makes the best move
+def findMoveNegaMaxAlphaBeta(gs, validMoves, depth, alpha, beta, turnMultiplier):  
+    global nextMove, counter
+    counter += 1
+    if depth == 0:
+        return turnMultiplier * scoreBoard(gs)
+
+    #move ordering - implement later (more efficient)
+    maxScore = -CHECKMATE
+    for move in validMoves:
+        gs.makeMove(move)
+        nextMoves = gs.getValidMoves()
+        score = -findMoveNegaMaxAlphaBeta(gs, nextMoves, depth-1, -beta, -alpha, -turnMultiplier)
+        if score > maxScore:
+            maxScore = score
+            if depth == DEPTH:
+                nextMove = move
+        gs.undoMove()
+        if maxScore > alpha:
+            alpha = maxScore
+        if alpha >= beta:
+            break
+    return maxScore
+
 # positive score is good for white, negative score is good for black
 def scoreBoard(gs):
     if gs.checkmate:
@@ -97,10 +143,6 @@ def scoreBoard(gs):
             elif square[0] == 'b':
                 score -= pieceScore[square[1]] 
     return score                   
-
-
-
-
 
 
 
