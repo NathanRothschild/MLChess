@@ -305,13 +305,15 @@ class GameState():
                     moves.append(Move((r,c),(r-1,c),self.board))
                     if r == 6 and self.board[r-2][c]=="--":
                         moves.append(Move((r,c),(r-2,c),self.board))
-                if c-1>=0:    
+            if c-1>=0:  
+                
                     if self.board[r-1][c-1][0]=='b':
                         moves.append(Move((r,c),(r-1,c-1),self.board))
                     elif(r-1, c-1) == self.enpassantPossible:
                         moves.append(Move((r, c), (r-1, c-1), self.board, isEnpassantMove = True))
 
-                if c+1<=7:
+            if c+1<=7:
+                
                     if self.board[r-1][c+1][0]=='b':
                         moves.append(Move((r,c),(r-1,c+1),self.board))
                     elif(r-1, c+1) == self.enpassantPossible:
@@ -322,12 +324,14 @@ class GameState():
                     moves.append(Move((r,c),(r+1,c),self.board))
                     if r == 1 and self.board[r+2][c]=="--":
                         moves.append(Move((r,c),(r+2,c),self.board))
-                if c-1>=0:
+            if c-1>=0:
+                
                     if self.board[r+1][c-1][0]=='w':
                         moves.append(Move((r,c),(r+1,c-1),self.board))
                     elif(r+1, c-1) == self.enpassantPossible:
                         moves.append(Move((r, c), (r+1, c-1), self.board, isEnpassantMove = True))
-                if c+1<= 7:
+            if c+1<= 7:
+                
                     if self.board[r+1][c+1][0]=='w':
                         moves.append(Move((r, c), (r+1, c+1), self.board))
                     elif(r+1, c+1) == self.enpassantPossible:
