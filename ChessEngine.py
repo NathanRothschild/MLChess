@@ -105,7 +105,7 @@ class GameState():
 
 
     def getValidMoves(self):
-        """tempEnpassantPossible = self.enpassantPossible
+        tempEnpassantPossible = self.enpassantPossible
         tempCastleRights = CastleRights(self.currentCastlingRight.wks, self.currentCastlingRight.bks, self.currentCastlingRight.wqs, self.currentCastlingRight.bqs)
         moves = self.getAllPossibleMoves()
         if self.whiteToMove:
@@ -164,7 +164,7 @@ class GameState():
         else:
             moves = self.getAllPossibleMoves()
         return moves
-        
+        """
 
     def checkForPinsAndChecks(self):
         pins = []
