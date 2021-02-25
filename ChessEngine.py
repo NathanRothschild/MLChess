@@ -115,18 +115,19 @@ class GameState():
         for i in range(len(moves)-1, -1, -1):
             self.makeMove(moves[i])
             self.whiteToMove = not self.whiteToMove
-            if self.inCheck():
+            if self.inCheck:
                 moves.remove(moves[i])
             self.whiteToMove = not self.whiteToMove
             self.undoMove()
         if len(moves) == 0:
-            if self.inCheck():
+            if self.inCheck:
                 self.checkmate = True
             else:
                 self.stalemate = True
 
         self.enpassantPossible = tempEnpassantPossible
         self.currentCastlingRight = tempCastleRights
+        return moves
         
         
 
