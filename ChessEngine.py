@@ -161,6 +161,14 @@ class GameState():
                 self.getKingMoves(kingRow,kingCol,moves)
         else:
             moves = self.getAllPossibleMoves()
+        tempEnpassantPossible = self.enpassantPossible
+        tempCastleRights = CastleRights(self.currentCastlingRight.wks, self.currentCastlingRight.bks, self.currentCastlingRight.wqs, self.currentCastlingRight.bqs)
+        moves = self.getAllPossibleMoves()
+        if self.whiteToMove:
+            self.getCastleMoves(self.whiteKingLocation[0], self.whiteKingLocation[1], moves)
+        else:
+            self.getCastleMoves(self.blackKingLocation[0], self.blackKingLocation[1], moves)
+        self.currentCastlingRight = tempCastleRights
         return moves
         
 
