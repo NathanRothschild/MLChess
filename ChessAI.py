@@ -44,6 +44,7 @@ def findRandomMove(validMoves):
 def findBestMoveMinMax(gs, validMoves):
     global nextMove
     nextMove = None
+    random.shuffle(validMoves)
     findMoveMinMax(gs, validMoves, DEPTH, gs.whiteToMove)
     return nextMove
 
