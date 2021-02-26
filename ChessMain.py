@@ -16,6 +16,7 @@ def loadImages():
         IMAGES[piece] = p.transform.scale(p.image.load(piece + ".png"), (SQ_SIZE, SQ_SIZE))
 
 def main():
+    global gameOver
     p.init()
     screen = p.display.set_mode((WIDTH, HEIGHT))
     clock = p.time.Clock()
@@ -92,15 +93,18 @@ def main():
 
         drawGameState(screen, gs, validMoves, sqSelected)
 
-        if gs.checkmate:
+        if gs.determineEndGame() == 1:
             gameOver = True
-            if gs.whiteToMove:
-                drawText(screen, 'Black wins by checkmate')
-            else:
-                drawText(screen, 'White wins by checkmate')
-        elif gs.stalemate:
+            drawText(screen, 'White wins by checkmate')
+            print('White wins by checkmate')
+        elif gs.determineEndGame() == -1:
+            gameOver = True
+            drawText(screen, 'Black wins by checkmate')
+            print('Black wins by checkmate')
+        elif gs.determineEndGame() == 0:
             gameOver = True
             drawText(screen, 'Draw by stalemate')
+            print('Draw by stalemate')
 
         clock.tick(MAX_FPS)
         p.display.flip()
@@ -161,6 +165,7 @@ def animateMove(move, screen, board, clock, gs):
     print('gs.stalemate: ' + str(gs.stalemate))
     print('gs.determineEndGame: ' + str(gs.determineEndGame()))
     print('gs.getValidMoves has ' + str(len(gs.getValidMoves())) + ' terms.')
+    print('gameOver: ' + str(gameOver))
 
 def drawText(screen, text):
     font = p.font.SysFont('Helvetica', 32 , True, False)

@@ -160,11 +160,11 @@ class GameState():
                     if moves[i].pieceMoved[1]!='K':
                         if not (moves[i].endRow,moves[i].endCol) in validSquares:
                             moves.remove(moves[i])
-                if len(moves) == 0:
+                '''if len(moves) == 0:
                     if self.inCheck:
                         self.checkmate = True
                     else:
-                        self.stalemate = True
+                        self.stalemate = True'''
             else:
                 self.getKingMoves(kingRow,kingCol,moves)
         else:
@@ -483,7 +483,7 @@ class GameState():
                 return 1
             else:
                 return 0
-        return False
+        return None
 
 class CastleRights():
     def __init__ (self, wks, bks, wqs, bqs):
