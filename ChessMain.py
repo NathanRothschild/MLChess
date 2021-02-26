@@ -122,9 +122,8 @@ def drawGameState(screen, gs, validMoves, sqSelected):
     drawBoard(screen)
     highlightSquares(screen, gs, validMoves, sqSelected)
     drawPieces(screen, gs.board)
-    if not gs.determineEndGame()==False:
+    #if not gs.determineEndGame()==False:
         #p.draw.rect(screen,(255,0,0),(0,0,100,100))
-
 def drawBoard(screen):
     global colors
     colors = [p.Color(235, 235, 208), p.Color(119, 148, 85)]
