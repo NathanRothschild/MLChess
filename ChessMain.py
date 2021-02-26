@@ -123,7 +123,7 @@ def drawGameState(screen, gs, validMoves, sqSelected):
     highlightSquares(screen, gs, validMoves, sqSelected)
     drawPieces(screen, gs.board)
     if not gs.determineEndGame()==False:
-        p.draw.rect(screen,(255,0,0),(0,0,100,100))
+        #p.draw.rect(screen,(255,0,0),(0,0,100,100))
 
 def drawBoard(screen):
     global colors
